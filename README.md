@@ -2,6 +2,28 @@
 
 Repo for libaries implementing multilevel parallel patterns
 
+## Project Overview
+This project involves the implementation of multilevel parallel pattern libraries using Erlang. For each task, three versions will be developed:
+
+Sequential Program: A baseline implementation that executes tasks sequentially.
+
+Manual Parallel Program: An implementation that leverages manual parallelization techniques.
+
+Custom Library Parallel Program: An implementation utilizing a custom parallel pattern library designed for this project.
+The primary objective is to ensure that the performance, speed, and other relevant metrics of the custom library implementation closely match those of the manually parallelized version while surpassing the sequential implementation.
+
+### Parallel Patterns Implemented
+The following parallel patterns are implemented within the custom library:
+
+Map Pattern: Enables the parallel application of a function to a collection of elements.
+Farm Pattern: Distributes tasks across multiple workers to increase throughput.
+Pipeline Pattern: Organizes tasks in a sequence of stages, where each stage can be processed in parallel.
+
+### Evaluation
+To evaluate the efficacy of the custom parallel pattern libraries, two real-world tasks requiring parallelism will be implemented for each pattern. These tasks will be used to compare the performance of the sequential, manual parallel, and custom library implementations.
+
+The project's success will be measured by the extent to which the custom library's performance approaches that of the manually parallelized version, while demonstrating significant improvements over the sequential version.
+
 ## Setup
 
 1. Clone this repository
