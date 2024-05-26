@@ -5,11 +5,12 @@ Repo for libaries implementing multilevel parallel patterns
 ## Project Overview
 This project involves the implementation of multilevel parallel pattern libraries using Erlang. For each task, three versions will be developed:
 
-Sequential Program: A baseline implementation that executes tasks sequentially.
+A) Sequential Program: A baseline implementation that executes tasks sequentially.
 
-Manual Parallel Program: An implementation that leverages manual parallelization techniques.
+B) Custom Parallel Program: An implementation that leverages  parallelization techniques specific to the task.
 
-Custom Library Parallel Program: An implementation utilizing a custom parallel pattern library designed for this project.
+C) Custom Library Parallel Program: An implementation utilizing a custom parallel pattern library designed for this project to generalize the parallel pattern for a use case.
+
 The primary objective is to ensure that the performance, speed, and other relevant metrics of the custom library implementation closely match those of the manually parallelized version while surpassing the sequential implementation.
 
 ### Parallel Patterns Implemented
