@@ -1,4 +1,4 @@
-# parallelpatterns_libraries
+# Multilevel Parallel Patterns
 
 Repo for libaries implementing multilevel parallel patterns
 
