@@ -1,6 +1,6 @@
 # Multilevel Parallel Patterns
 
-Repo for libaries implementing multilevel parallel patterns
+
 
 ## Project Overview
 This project involves the implementation of multilevel parallel pattern libraries using Erlang. For each task, three versions will be developed:
