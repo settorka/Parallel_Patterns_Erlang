@@ -1,5 +1,0 @@
-[{<<"farm_parallel_pattern">>,
-  {git_subdir,"https://github.com/settor21/Parallel_Patterns_Erlang.git",
-              {ref,"a5c8331b4430a3fd0ebcc6c648871aeb52007568"},
-              "lib/farm_parallel_pattern"},
-  0}].
