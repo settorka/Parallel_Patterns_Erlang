@@ -22,11 +22,11 @@ run() ->
     % Run the pipeline with the defined stages
     Result = pipeline_parallel_pattern:run_pipeline(Stages, Filename),
     
-    result_file_name = "output.json",
+    ResultFileName = "output.json",
     % Handles the result
     case Result of
-        {ok, result_file_name} ->
-            io:format("Log analysis complete. Output written to ~s~n", [result_file_name]);
+        {ok, ResultFileName} ->
+            io:format("Log analysis complete. Output written to ~s~n", [ResultFileName]);
         {error, Reason} ->
             io:format("Log analysis failed: ~p~n", [Reason])
     end.
