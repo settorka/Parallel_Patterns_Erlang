@@ -1,17 +1,34 @@
 -module(text_write_farm).
--export([write_text/3]).
+-export([file_write_worker/2, run/0]).
 
-write_text(FilePath, TextList, N) ->
-    %% Number of workers
-    NumWorkers = 4,
-    %% Function to write a single text segment N times
-    Fun = fun(Text) -> write_text_segment(FilePath, Text, N) end,
-    %% Use the farm parallel pattern
-    farm_parallel_pattern:start(NumWorkers, Fun, TextList),
-    %% No need to stop workers manually here.
-    ok.
+% Function to write text to a file
+file_write_worker(Filename, Times) ->
+    Text = "Hello, World!",
+    case file:open(Filename, [write, append]) of
+        {ok, File} ->
+            write_text(File, Text, Times),
+            file:close(File);
+        {error, Reason} ->
+            io:format("Worker failed to open file: ~p~n", [Reason])
+    end.
 
-write_text_segment(FilePath, Text, N) ->
-    {ok, File} = file:open(FilePath, [append, raw]),
-    lists:foreach(fun(_) -> io:format(File, "~s~n", [Text]) end, lists:seq(1, N)),
-    file:close(File).
+% Helper function to write text N times
+write_text(_, _, 0) ->
+    ok;
+write_text(File, Text, N) when N > 0 ->
+    io:format(File, "~s~n", [Text]),
+    write_text(File, Text, N - 1).
+
+% Run function to execute the file writing in parallel
+run() ->
+    Filename = "output_parallel.txt",
+    Times = 100000,
+    NumWorkers = 4, % Adjust the number of workers as needed
+
+    % Call farm_work to perform the parallel file writing
+    case farm_parallel_pattern:farm_work(Times, NumWorkers, fun file_write_worker/2, Filename) of
+        ok ->
+            io:format("File written successfully in parallel.~n");
+        {error, Reason} ->
+            io:format("Failed to write to file: ~p~n", [Reason])
+    end.

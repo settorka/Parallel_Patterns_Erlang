@@ -1,13 +1,56 @@
 -module(text_write_sequential).
--export([write_text/3]).
+-export([write_to_file/3, create_or_overwrite_file/1, run/0]).
 
-write_text(FilePath, TextList, N) ->
-    %% Open file
-    {ok, File} = file:open(FilePath, [write, raw]),
-    %% Write each text segment N times sequentially
-    lists:foreach(fun(Text) -> write_text_n_times(File, Text, N) end, TextList),
-    %% Close file
-    file:close(File).
+% Function to create or overwrite the file
+create_or_overwrite_file(Filename) ->
+    % Attempt to open the file in write mode (creates or overwrites)
+    case file:open(Filename, [write]) of
+        {ok, File} ->
+            % Successfully opened the file
+            file:close(File),
+            ok;
+        {error, Reason} ->
+            % Return an error if unable to open the file
+            {error, Reason}
+    end.
 
-write_text_n_times(File, Text, N) ->
-    lists:foreach(fun(_) -> io:format(File, "~s~n", [Text]) end, lists:seq(1, N)).
+% Function to write text to a file n times
+write_to_file(Filename, Text, N) ->
+    case file:open(Filename, [write]) of
+        {ok, File} ->
+            % Start writing text
+            write_text(File, Text, N),
+            % Close the file after writing
+            file:close(File),
+            ok;
+        {error, Reason} ->
+            % Return an error if unable to open the file
+            {error, Reason}
+    end.
+
+% Helper function to write text N times
+write_text(_, _, 0) ->
+    ok;
+write_text(File, Text, N) when N > 0 ->
+    io:format(File, "~s~n", [Text]),
+    write_text(File, Text, N - 1).
+
+% Run function to take filename, text, and number of times
+run() ->
+    Filename = "output.txt",
+    Text = "Hello, World!",
+    N = 100000,
+    % Create or overwrite the file
+    case create_or_overwrite_file(Filename) of
+        ok ->
+            % Write the text to the file N times
+            case write_to_file(Filename, Text, N) of
+                ok ->
+                    io:format("File written successfully.~n");
+                {error, Reason} ->
+                    io:format("Failed to write to file: ~p~n", [Reason])
+            end;
+        {error, Reason} ->
+            io:format("Failed to create or overwrite file: ~p~n", [Reason])
+    end.
+
