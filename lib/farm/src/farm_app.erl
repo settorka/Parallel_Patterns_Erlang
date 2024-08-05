@@ -1,16 +1,16 @@
 %%%-------------------------------------------------------------------
-%% @doc farm_parallel_pattern public API
+%% @doc farm public API
 %% @end
 %%%-------------------------------------------------------------------
 
--module(farm_parallel_pattern_app).
+-module(farm_app).
 
 -behaviour(application).
 
 -export([start/2, stop/1]).
 
 start(_StartType, _StartArgs) ->
-    farm_parallel_pattern_sup:start_link().
+    farm_sup:start_link().
 
 stop(_State) ->
     ok.

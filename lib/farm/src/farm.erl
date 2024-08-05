@@ -1,4 +1,4 @@
--module(farm_parallel_pattern).
+-module(farm).
 -export([farm_work/4, create_or_overwrite_file/1]).
 
 % Function to create or overwrite the file
