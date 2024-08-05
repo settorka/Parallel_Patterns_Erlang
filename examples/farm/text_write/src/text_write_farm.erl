@@ -1,6 +1,7 @@
 -module(text_write_farm).
 -export([file_write_worker/2, run/0]).
 
+
 % Function to write text to a file
 file_write_worker(Filename, Times) ->
     Text = "Hello, World!",
@@ -21,7 +22,7 @@ write_text(File, Text, N) when N > 0 ->
 
 % Run function to execute the file writing in parallel
 run() ->
-    Filename = "output_parallel.txt",
+    Filename = "output_farm.txt",
     Times = 100000,
     NumWorkers = 4, % Adjust the number of workers as needed
 
