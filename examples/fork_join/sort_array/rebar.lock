@@ -1,1 +1,5 @@
-[].
+[{<<"fork_join_parallel_pattern">>,
+  {git_subdir,"https://github.com/settor21/Parallel_Patterns_Erlang.git",
+              {ref,"fed5a9fe0b6460e7e3b3307b234f47c8cdd7694e"},
+              "lib/fork_join_parallel_pattern"},
+  0}].

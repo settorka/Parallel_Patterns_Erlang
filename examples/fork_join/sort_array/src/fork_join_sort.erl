@@ -11,7 +11,7 @@ sort(Array) ->
           end,
 
     % Process the function using fork-join pattern
-    SortedChunks = fork_join:process(Fun, chunk_array(Array)),
+    SortedChunks = fork_join_parallel_pattern:process(Fun, chunk_array(Array)),
 
     % Merge the sorted chunks
     merge_sorted_chunks(SortedChunks).
