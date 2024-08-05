@@ -1,4 +1,4 @@
-farm
+farm_parallel_pattern
 =====
 
 An OTP application

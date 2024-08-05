@@ -1,9 +1,9 @@
 %%%-------------------------------------------------------------------
-%% @doc farm top level supervisor.
+%% @doc farm_parallel_pattern top level supervisor.
 %% @end
 %%%-------------------------------------------------------------------
 
--module(farm_sup).
+-module(farm_parallel_pattern_sup).
 
 -behaviour(supervisor).
 
