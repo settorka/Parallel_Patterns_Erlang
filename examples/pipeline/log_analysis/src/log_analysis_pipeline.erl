@@ -22,7 +22,7 @@ run() ->
     % Run the pipeline with the defined stages
     Result = pipeline_parallel_pattern:run_pipeline(Stages, Filename),
     
-    ResultFileName = "output.json",
+    ResultFileName = "o",
     % Handles the result
     case Result of
         {ok, ResultFileName} ->

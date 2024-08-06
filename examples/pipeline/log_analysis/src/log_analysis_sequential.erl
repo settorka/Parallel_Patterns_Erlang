@@ -1,6 +1,8 @@
 -module(log_analysis_sequential).
--export([analyze_log/1]).
+-export([run/0, analyze_log/1]).
 
+run() -> 
+    analyze_log("log_file.txt").
 analyze_log(Filename) ->
     % Stage 1: Read the file
     Data = read_file(Filename),

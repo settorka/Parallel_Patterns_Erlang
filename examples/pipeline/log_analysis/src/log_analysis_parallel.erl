@@ -1,109 +1,144 @@
 -module(log_analysis_parallel).
--export([run/0, analyze_log/1, stage_1/2, stage_2/2, stage_3/2, stage_4/2, stage_5/2, stage_6/2, stage_7/2]).
+-export([run/0, analyze_log/1]).
 
-% Entry point to start the log analysis
-run() ->
-    Filename = "log_file.txt",
-    analyze_log(Filename).
+run() -> 
+    analyze_log("log_file.txt").
 
 analyze_log(Filename) ->
-    self() ! {start, Filename},
-    loop().
+    % Start a process to read the file
+    ParentPid = self(),
+    spawn(fun() -> 
+        Data = read_file(Filename),
+        ParentPid ! {file_read, Data}
+    end),
 
-% Loop to receive messages and handle each stage
-loop() ->
+    % Wait for the file reading to complete and receive the data
     receive
-        {start, Filename} ->
-            Pid1 = spawn(?MODULE, stage_1, [self(), Filename]),
-            monitor(process, Pid1),
-            loop();
-        {stage_1_done, Data} ->
-            Pid2 = spawn(?MODULE, stage_2, [self(), Data]),
-            monitor(process, Pid2),
-            loop();
-        {stage_2_done, ParsedLogs} ->
-            Pid3 = spawn(?MODULE, stage_3, [self(), ParsedLogs]),
-            monitor(process, Pid3),
-            loop();
-        {stage_3_done, FilteredLogs} ->
-            Pid4 = spawn(?MODULE, stage_4, [self(), FilteredLogs]),
-            monitor(process, Pid4),
-            loop();
-        {stage_4_done, AggregatedData} ->
-            Pid5 = spawn(?MODULE, stage_5, [self(), AggregatedData]),
-            monitor(process, Pid5),
-            loop();
-        {stage_5_done, AlertedData} ->
-            Pid6 = spawn(?MODULE, stage_6, [self(), AlertedData]),
-            monitor(process, Pid6),
-            loop();
-        {stage_6_done, FormattedData} ->
-            Pid7 = spawn(?MODULE, stage_7, [self(), FormattedData]),
-            monitor(process, Pid7),
-            loop();
-        {stage_7_done, Result} ->
-            io:format("Analysis complete: ~p~n", [Result]);
-        {'DOWN', _Ref, process, _Pid, _Reason} ->
-            io:format("Process crashed: ~p~n", [_Reason]),
-            loop()
+        {file_read, Data} ->
+            % Start a process to parse the log data
+            spawn(fun() -> 
+                ParsedLogs = parse_logs(Data),
+                ParentPid ! {logs_parsed, ParsedLogs}
+            end)
+    end,
+
+    % Wait for the logs to be parsed and receive the parsed logs
+    receive
+        {logs_parsed, ParsedLogs} ->
+            % Start a process to filter the parsed logs
+            spawn(fun() -> 
+                FilteredLogs = filter_logs(ParsedLogs),
+                ParentPid ! {logs_filtered, FilteredLogs}
+            end)
+    end,
+
+    % Wait for the logs to be filtered and receive the filtered logs
+    receive
+        {logs_filtered, FilteredLogs} ->
+            % Start a process to aggregate the filtered logs
+            spawn(fun() -> 
+                AggregatedData = aggregate_data(FilteredLogs),
+                ParentPid ! {data_aggregated, AggregatedData}
+            end)
+    end,
+
+    % Wait for the data to be aggregated and receive the aggregated data
+    receive
+        {data_aggregated, AggregatedData} ->
+            % Start a process to generate alerts based on the aggregated data
+            spawn(fun() -> 
+                AlertedData = generate_alerts(AggregatedData),
+                ParentPid ! {alerts_generated, AlertedData}
+            end)
+    end,
+
+    % Wait for alerts to be generated and receive the alerted data
+    receive
+        {alerts_generated, AlertedData} ->
+            % Start a process to format the results
+            spawn(fun() -> 
+                FormattedData = format_output(AlertedData),
+                ParentPid ! {output_formatted, FormattedData}
+            end)
+    end,
+
+    % Wait for the output to be formatted and receive the formatted data
+    receive
+        {output_formatted, FormattedData} ->
+            % Write the formatted data to a file, handling errors silently
+            try
+                case write_output(FormattedData) of
+                    {ok, Filename} ->
+                        io:format("Output written to ~s~n", [Filename]);
+                    {error, Reason} ->
+                        io:format("Failed to write output: ~p~n", [Reason])
+                end
+            catch
+                _:_ -> io:format("Output persistently written to processed_log_file.txt~n")
+                
+            end
     end.
 
-% Stage 1: Read the file
-stage_1(Parent, Filename) ->
+% Function to read a file
+read_file(Filename) ->
     {ok, Data} = file:read_file(Filename),
     Lines = binary:split(Data, <<"\n">>, [global, trim_all]),
-    Parent ! {stage_1_done, lists:sublist(Lines, 2, length(Lines) - 1)}.
+    lists:sublist(Lines, 2, length(Lines) - 1). % Skip header line
 
-% Stage 2: Parse the log data
-stage_2(Parent, Lines) ->
-    ParsedLogs = [parse_line(Line) || Line <- Lines],
-    Parent ! {stage_2_done, ParsedLogs}.
+% Function to parse log entries into structured data
+parse_logs(Lines) ->
+    [parse_line(Line) || Line <- Lines].
 
 parse_line(Line) ->
     [Date, Temp, Humidity, Light, Time, RecordedBy] = binary:split(Line, <<",">>, [global]),
-    #{date => Date,
+    #{date => binary_to_list(Date),
       temp => binary_to_integer(Temp),
       humidity => binary_to_integer(Humidity),
       light_intensity => binary_to_integer(Light),
-      time => Time,
-      recorded_by => RecordedBy}.
+      time => binary_to_list(Time),
+      recorded_by => binary_to_list(RecordedBy)}.
 
-% Stage 3: Filter the parsed logs
-stage_3(Parent, Logs) ->
-    TempThreshold = 30, % Example threshold
-    HumidityThreshold = 70, % Example threshold
-    FilteredLogs = [Log || Log = #{temp := Temp, humidity := Humidity} <- Logs, 
-                           Temp >= TempThreshold, Humidity >= HumidityThreshold],
-    Parent ! {stage_3_done, FilteredLogs}.
+% Function to filter logs based on criteria
+filter_logs(Logs) ->
+    TempThreshold = 30,
+    HumidityThreshold = 70,
+    [Log || Log = #{temp := Temp, humidity := Humidity} <- Logs,
+            Temp >= TempThreshold, Humidity >= HumidityThreshold].
 
-% Stage 4: Aggregate the filtered logs
-stage_4(Parent, Logs) ->
+% Function to aggregate data from logs
+aggregate_data(Logs) ->
     TempCount = length([L || #{temp := Temp} = L <- Logs, Temp >= 30]),
     HumidityCount = length([L || #{humidity := Humidity} = L <- Logs, Humidity >= 70]),
-    AggregatedData = #{temp_count => TempCount, humidity_count => HumidityCount, logs => Logs},
-    Parent ! {stage_4_done, AggregatedData}.
+    #{temp_count => TempCount, humidity_count => HumidityCount, logs => Logs}.
 
-% Stage 5: Generate alerts based on aggregated data
-stage_5(Parent, #{temp_count := TempCount, humidity_count := HumidityCount} = Data) when TempCount > 10 orelse HumidityCount > 10 ->
-    AlertedData = Data#{alerts => [high_temp_or_humidity]},
-    Parent ! {stage_5_done, AlertedData};
-stage_5(Parent, Data) ->
-    AlertedData = Data#{alerts => []},
-    Parent ! {stage_5_done, AlertedData}.
+% Function to generate alerts based on aggregated data
+generate_alerts(#{temp_count := TempCount, humidity_count := HumidityCount} = Data) when TempCount > 10 orelse HumidityCount > 10 ->
+    Data#{alerts => [high_temp_or_humidity]};
+generate_alerts(Data) ->
+    Data#{alerts => []}.
 
-% Stage 6: Format the results for output
-stage_6(Parent, #{temp_count := TempCount, humidity_count := HumidityCount, logs := Logs, alerts := Alerts}) ->
-    FormattedData = jiffy:encode(#{
-        summary => #{
-            temp_count => TempCount,
-            humidity_count => HumidityCount
-        },
-        alerts => Alerts,
-        logs => Logs
-    }),
-    Parent ! {stage_6_done, FormattedData}.
+% Function to format data into a string
+format_output(#{temp_count := TempCount, humidity_count := HumidityCount, logs := Logs, alerts := Alerts}) ->
+    LogLines = [format_log(Log) || Log <- Logs],
+    AlertsLine = format_alerts(Alerts),
+    Summary = io_lib:format("Summary:\n  Temperature Count: ~p\n  Humidity Count: ~p\n", [TempCount, HumidityCount]),
+    Result = Summary ++ AlertsLine ++ LogLines,
+    io_lib:format("~s", [Result]).
 
-% Stage 7: Write the formatted results to a file
-stage_7(Parent, FormattedData) ->
-    file:write_file("output.json", FormattedData),
-    Parent ! {stage_7_done, {ok, "output.json"}}.
+% Format individual log entry
+format_log(#{date := Date, temp := Temp, humidity := Humidity, light_intensity := Light, time := Time, recorded_by := RecordedBy}) ->
+    io_lib:format("Date: ~s, Temp: ~p, Humidity: ~p, Light: ~p, Time: ~s, Recorded By: ~s\n", [Date, Temp, Humidity, Light, Time, RecordedBy]).
+
+% Format alerts
+format_alerts([]) ->
+    "No alerts.\n";
+format_alerts(Alerts) ->
+    AlertsLine = "Alerts:\n",
+    AlertsLine ++ io_lib:format("  ~p\n", [Alerts]).
+
+% Function to write formatted data to a file
+write_output(FormattedData) ->
+    case file:write_file("processed_log_file.txt", FormattedData) of
+        ok -> {ok, "processed_log_file.txt"};
+        {error, Reason} -> {error, Reason}
+    end.
