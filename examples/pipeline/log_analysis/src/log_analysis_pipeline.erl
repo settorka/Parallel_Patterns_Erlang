@@ -1,5 +1,6 @@
 -module(log_analysis_pipeline).
 -export([run/0]).
+-import(log_analysis_sequential, [read_file/1, parse_logs/1, filter_logs/1, aggregate_data/1, generate_alerts/1, format_output/1, write_output/1]).
 
 run() ->
     % Define the filename for the log analysis
