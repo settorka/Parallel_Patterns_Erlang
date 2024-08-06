@@ -1,5 +1,5 @@
 -module(text_write_sequential).
--export([write_to_file/3, create_or_overwrite_file/1, run/0]).
+-export([write_to_file/3, create_or_overwrite_file/1, run/1]).
 
 % Function to create or overwrite the file
 create_or_overwrite_file(Filename) ->
@@ -36,15 +36,15 @@ write_text(File, Text, N) when N > 0 ->
     write_text(File, Text, N - 1).
 
 % Run function to take filename, text, and number of times
-run() ->
+run(Times) ->
     Filename = "output.txt",
     Text = "Hello, World!",
-    N = 100000,
+    
     % Create or overwrite the file
     case create_or_overwrite_file(Filename) of
         ok ->
             % Write the text to the file N times
-            case write_to_file(Filename, Text, N) of
+            case write_to_file(Filename, Text, Times) of
                 ok ->
                     io:format("File written successfully.~n");
                 {error, Reason} ->

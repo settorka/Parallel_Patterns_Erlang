@@ -1,5 +1,5 @@
 -module(text_write_parallel).
--export([write_to_file_parallel/4, create_or_overwrite_file/1, run/0]).
+-export([write_to_file_parallel/3, create_or_overwrite_file/1, run/1]).
 
 % Function to create or overwrite the file
 create_or_overwrite_file(Filename) ->
@@ -14,11 +14,13 @@ create_or_overwrite_file(Filename) ->
             {error, Reason}
     end.
 
-% Function to write text to a file in parallel with N workers
-write_to_file_parallel(Filename, Text, Times, NumWorkers) ->
+% Function to write text to a file in parallel with the number of available cores
+write_to_file_parallel(Filename, Text, Times) ->
     % Create or overwrite the file
     case create_or_overwrite_file(Filename) of
         ok ->
+            % Get the number of logical processors (cores)
+            NumWorkers = erlang:system_info(logical_processors),
             % Start the workers
             Pids = start_workers(NumWorkers, Filename, Text, Times),
             % Wait for all workers to finish
@@ -71,14 +73,13 @@ wait_for_workers(Pids) ->
         end
     end, Pids).
 
-% Run function to take filename, text, number of times, and number of workers
-run() ->
+% Run function to take filename, text, and number of times
+run(Times) ->
     Filename = "output_parallel.txt",
     Text = "Hello, World!",
-    Times = 100000,
-    NumWorkers = 4, % Adjust the number of workers as needed
+    
     % Write the text to the file in parallel
-    case write_to_file_parallel(Filename, Text, Times, NumWorkers) of
+    case write_to_file_parallel(Filename, Text, Times) of
         ok ->
             io:format("File written successfully in parallel.~n");
         {error, Reason} ->

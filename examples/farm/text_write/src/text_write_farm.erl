@@ -1,5 +1,5 @@
 -module(text_write_farm).
--export([file_write_worker/2, run/0]).
+-export([file_write_worker/2, run/1]).
 
 
 % Function to write text to a file
@@ -21,10 +21,9 @@ write_text(File, Text, N) when N > 0 ->
     write_text(File, Text, N - 1).
 
 % Run function to execute the file writing in parallel
-run() ->
+run(Times) ->
     Filename = "output_farm.txt",
-    Times = 100000,
-    NumWorkers = 4, % Adjust the number of workers as needed
+    NumWorkers = erlang:system_info(schedulers_online), % Adjust the number of workers as needed
 
     % Call farm_work to perform the parallel file writing
     case farm_parallel_pattern:farm_work(Times, NumWorkers, fun file_write_worker/2, Filename) of
