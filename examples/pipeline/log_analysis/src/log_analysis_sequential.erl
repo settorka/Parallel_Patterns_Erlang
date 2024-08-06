@@ -1,9 +1,5 @@
 -module(log_analysis_sequential).
--export([run/1, analyze_log/1]).
-
-% Entry point to start the log analysis
-run(Filename) ->
-    analyze_log(Filename).
+-export([analyze_log/1]).
 
 analyze_log(Filename) ->
     % Stage 1: Read the file
@@ -39,18 +35,18 @@ parse_logs(Lines) ->
 
 parse_line(Line) ->
     [Date, Temp, Humidity, Light, Time, RecordedBy] = binary:split(Line, <<",">>, [global]),
-    #{date => Date,
+    #{date => binary_to_list(Date),
       temp => binary_to_integer(Temp),
       humidity => binary_to_integer(Humidity),
       light_intensity => binary_to_integer(Light),
-      time => Time,
-      recorded_by => RecordedBy}.
+      time => binary_to_list(Time),
+      recorded_by => binary_to_list(RecordedBy)}.
 
 % Function to filter logs based on criteria
 filter_logs(Logs) ->
-    TempThreshold = 30, % Example threshold
-    HumidityThreshold = 70, % Example threshold
-    [Log || Log = #{temp := Temp, humidity := Humidity} <- Logs, 
+    TempThreshold = 30,
+    HumidityThreshold = 70,
+    [Log || Log = #{temp := Temp, humidity := Humidity} <- Logs,
             Temp >= TempThreshold, Humidity >= HumidityThreshold].
 
 % Function to aggregate data from logs
@@ -65,18 +61,28 @@ generate_alerts(#{temp_count := TempCount, humidity_count := HumidityCount} = Da
 generate_alerts(Data) ->
     Data#{alerts => []}.
 
-% Function to format data into a JSON structure
+% Function to format data into a string
 format_output(#{temp_count := TempCount, humidity_count := HumidityCount, logs := Logs, alerts := Alerts}) ->
-    jiffy:encode(#{
-        summary => #{
-            temp_count => TempCount,
-            humidity_count => HumidityCount
-        },
-        alerts => Alerts,
-        logs => Logs
-    }).
+    LogLines = [format_log(Log) || Log <- Logs],
+    AlertsLine = format_alerts(Alerts),
+    Summary = io_lib:format("Summary:\n  Temperature Count: ~p\n  Humidity Count: ~p\n", [TempCount, HumidityCount]),
+    Result = Summary ++ AlertsLine ++ LogLines,
+    io_lib:format("~s", [Result]).
+
+% Format individual log entry
+format_log(#{date := Date, temp := Temp, humidity := Humidity, light_intensity := Light, time := Time, recorded_by := RecordedBy}) ->
+    io_lib:format("Date: ~s, Temp: ~p, Humidity: ~p, Light: ~p, Time: ~s, Recorded By: ~s\n", [Date, Temp, Humidity, Light, Time, RecordedBy]).
+
+% Format alerts
+format_alerts([]) ->
+    "No alerts.\n";
+format_alerts(Alerts) ->
+    AlertsLine = "Alerts:\n",
+    AlertsLine ++ io_lib:format("  ~p\n", [Alerts]).
 
 % Function to write formatted data to a file
 write_output(FormattedData) ->
-    file:write_file("output.json", FormattedData),
-    {ok, "output.json"}.
+    case file:write_file("processed_log_file.txt", FormattedData) of
+        ok -> {ok, "processed_log_file.txt"};
+        {error, Reason} -> {error, Reason}
+    end.

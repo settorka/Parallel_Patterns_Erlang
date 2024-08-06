@@ -1,8 +1,9 @@
 -module(log_analysis_parallel).
--export([run/1, analyze_log/1, stage_1/2, stage_2/2, stage_3/2, stage_4/2, stage_5/2, stage_6/2, stage_7/2]).
+-export([run/0, analyze_log/1, stage_1/2, stage_2/2, stage_3/2, stage_4/2, stage_5/2, stage_6/2, stage_7/2]).
 
 % Entry point to start the log analysis
-run(Filename) ->
+run() ->
+    Filename = "log_file.txt",
     analyze_log(Filename).
 
 analyze_log(Filename) ->
