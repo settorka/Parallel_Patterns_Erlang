@@ -19,4 +19,4 @@ logs
 rebar3.crashdump
 *~
 processed_log_file.txt
-log_file.txt
+*.txt
