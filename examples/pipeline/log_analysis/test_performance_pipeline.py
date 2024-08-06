@@ -11,7 +11,7 @@ BATCH_SIZES = [10, 100, 750, 5000, 10000,
 CSV_FILE = "pipeline_performance_results.csv"
 
 # Set the working directory to the location where the Erlang modules are compiled
-ERLANG_BUILD_PATH = os.path.abspath("path/to/your/ebin")  # Update this path
+ERLANG_BUILD_PATH = os.path.abspath("_build\default\lib\log_analysis\ebin")  # Update this path
 
 # Function to create the log file
 

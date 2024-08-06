@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Read the CSV file into a DataFrame
-df = pd.read_csv('farm_performance_results.csv')
+df = pd.read_csv('pipeline_performance_results.csv')
 
 # Set up the matplotlib figure
 plt.figure(figsize=(14, 8))
