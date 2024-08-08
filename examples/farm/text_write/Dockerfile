@@ -1,28 +1,23 @@
-# Use an official Erlang base image
+# official Erlang base image
 FROM erlang:26
 
-# Install rebar3, Python, and virtualenv
+# Install rebar3 and Python
 RUN apt-get update && apt-get install -y \
     rebar3 \
     python3-pip \
-    python3-venv \
     && apt-get clean
 
-# Set the working directory inside the container
+# working directory set inside the container
 WORKDIR /app
 
-# Copy the current directory contents into the container
+# current directory contents copied into the container
 COPY . .
 
-# Create a virtual environment and activate it
-RUN python3 -m venv /venv
-ENV PATH="/venv/bin:$PATH"
+# Python dependencies for testing batch sizes and visualisation installed
+RUN pip3 install -r requirements.txt
 
-# Install Python dependencies
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Compile the Erlang application
+RUN rebar3 compile
 
-# Clean the build directory if it exists and compile the Erlang application
-RUN rebar3 clean && rebar3 compile
-
-# Command to run the benchmarks and then visualize the results
+# Command to run the batch size performance tests and then visualize the results
 CMD ["bash", "-c", "python3 test_performance_farm.py && python3 visualise_performance.py"]
