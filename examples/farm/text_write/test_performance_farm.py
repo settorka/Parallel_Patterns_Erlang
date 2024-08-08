@@ -5,7 +5,7 @@ import os
 
 # Define the batch sizes
 BATCH_SIZES = [10, 100, 750, 5000, 10000,
-               50000, 100000, 200000, 500000, 1000000]
+               50000, 100000, 200000, 500000, 1000000, 2000000, 45000000, 10000000, 17500000, 30000000, 50000000]
 
 # Define the output CSV file
 CSV_FILE = "farm_performance_results.csv"
