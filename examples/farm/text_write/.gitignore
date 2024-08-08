@@ -21,4 +21,4 @@ rebar3.crashdump
 output.txt
 output_parallel.txt
 output_farm.txt
-*.txt
+
