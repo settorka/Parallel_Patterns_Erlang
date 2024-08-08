@@ -22,7 +22,7 @@ ENV PATH="/venv/bin:$PATH"
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # Clean the build directory if it exists and compile the Erlang application
-RUN rm -rf _build && rebar3 clean && rebar3 compile
+RUN rebar3 clean && rebar3 compile
 
 # Command to run the benchmarks and then visualize the results
 CMD ["bash", "-c", "python3 test_performance_farm.py && python3 visualise_performance.py"]
