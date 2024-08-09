@@ -42,7 +42,7 @@ def run_benchmark(batch_size, approach, module):
         end_time = time.time()
 
         # Calculate the execution time in seconds
-        execution_time = end_time - start_time
+        execution_time = round(end_time - start_time,2)
 
         # Write the results to the CSV file
         with open(CSV_FILE, 'a', newline='') as csvfile:
