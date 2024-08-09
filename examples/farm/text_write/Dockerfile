@@ -25,4 +25,5 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 RUN rebar3 compile
 
 # Command to run the benchmarks and then visualize the results
-CMD ["bash", "-c", "python3 test_performance_farm.py && python3 visualise_performance.py"]
+CMD ["python","test_performance_farm.py"] 
+CMD ["python", "visualise_performance.py"]
