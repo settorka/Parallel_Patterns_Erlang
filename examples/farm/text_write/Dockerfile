@@ -24,5 +24,5 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Compile the Erlang application
 RUN rebar3 compile
 
-# Command to run the benchmarks and then visualize the results
-CMD ["/bin/bash", "-c", "python3 test_performance_farm.py && python3 visualise_performance.py"]
+# Command to run the benchmarks and visualize the results
+CMD ["python3", "test_performance_farm.py"]

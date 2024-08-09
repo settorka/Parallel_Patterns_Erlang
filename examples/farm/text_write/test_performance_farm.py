@@ -1,11 +1,13 @@
+# test_performance_farm.py
 import subprocess
 import csv
 import time
 import os
+from visualize_performance import create_performance_plot  # Import the new function
 
 # Define the batch sizes
 BATCH_SIZES = [10, 100, 750, 5000, 10000,
-               50000, 100000, 200000, 500000, 1000000, 2000000, 45000000, 10000000, 17500000, 30000000, 50000000]
+               50000, 100000, 200000, 500000, 1000000, 2000000, 4500000, 10000000, 17500000, 30000000, 50000000]
 
 # Define the output CSV file
 CSV_FILE = "farm_performance_results.csv"
@@ -51,15 +53,23 @@ def run_benchmark(batch_size, approach, module):
         print(f"Error running {module}: {error_message}")
 
 
-# Create or overwrite the CSV file and write headers
-with open(CSV_FILE, 'w', newline='') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerow(["BatchSize", "Approach", "Time(sec)"])
+def main():
+    # Create or overwrite the CSV file and write headers
+    with open(CSV_FILE, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["BatchSize", "Approach", "Time(sec)"])
 
-# Iterate over batch sizes and approaches
-for batch_size in BATCH_SIZES:
-    run_benchmark(batch_size, "sequential", "text_write_sequential")
-    run_benchmark(batch_size, "parallel", "text_write_parallel")
-    run_benchmark(batch_size, "farm", "text_write_farm")
+    # Iterate over batch sizes and approaches
+    for batch_size in BATCH_SIZES:
+        run_benchmark(batch_size, "sequential", "text_write_sequential")
+        run_benchmark(batch_size, "parallel", "text_write_parallel")
+        run_benchmark(batch_size, "farm", "text_write_farm")
 
-print(f"Benchmarking completed. Results saved to {CSV_FILE}.")
+    print(f"Benchmarking completed. Results saved to {CSV_FILE}.")
+
+    # Call the visualization function
+    create_performance_plot(CSV_FILE, 'performance_plot.png')
+
+
+if __name__ == "__main__":
+    main()
