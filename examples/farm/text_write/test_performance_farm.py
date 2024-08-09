@@ -10,10 +10,8 @@ import seaborn as sns
 BATCH_SIZES = [10, 100, 750, 5000, 10000,
                50000, 100000, 200000, 500000, 1000000, 2000000, 4500000, 10000000, 17500000, 30000000, 50000000]
 
-
-# Define the output CSV file and the output plot file
-CSV_FILE = "/results/farm_performance_results.csv"
-PLOT_FILE = "/results/performance_plot.png"
+# Define the output CSV file
+CSV_FILE = "farm_performance_results.csv"
 
 # Define the files to remove
 FILES_TO_REMOVE = ["output.txt", "output_parallel.txt", "output_farm.txt"]
@@ -113,7 +111,7 @@ def main():
     print(f"Benchmarking completed. Results saved to {CSV_FILE}.")
 
     # Call the visualization function
-    create_performance_plot(CSV_FILE, PLOT_FILE)
+    create_performance_plot(CSV_FILE, 'performance_plot.png')
 
     # Clean up specific files
     cleanup_files(FILES_TO_REMOVE)
