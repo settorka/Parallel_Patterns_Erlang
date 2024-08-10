@@ -8,11 +8,12 @@ import seaborn as sns
 
 # Define the batch sizes
 BATCH_SIZES = [10, 100, 750, 5000, 10000,
-               50000, 100000, 200000, 500000, 1000000, 2000000, 4500000, 10000000, 17500000, 30000000, 50000000]
+               50000, 100000, 200000, 500000, 1000000, 2000000, 4500000, 10000000, 17500000, 30000000, 50000000,
+               75000000, 100000000, 250000000, 500000000, 85000000, 1000000000]
 
 # Define the output CSV file
-CSV_FILE = "pipeline_performance_results.csv"
-PLOT_FILE = "performance_plot.png"
+CSV_FILE = "/results/pipeline_performance_results.csv"
+PLOT_FILE = "/results/performance_plot.png"
 
 # Set the working directory to the location where the Erlang modules are compiled
 ERLANG_BUILD_PATH = os.path.abspath(
