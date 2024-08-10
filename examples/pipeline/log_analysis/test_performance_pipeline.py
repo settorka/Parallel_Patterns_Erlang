@@ -15,12 +15,15 @@ CSV_FILE = "pipeline_performance_results.csv"
 PLOT_FILE = "performance_plot.png"
 
 # Set the working directory to the location where the Erlang modules are compiled
-ERLANG_BUILD_PATH = os.path.abspath("_build\default\lib\log_analysis\ebin")  # Update this path
+ERLANG_BUILD_PATH = os.path.abspath(
+    "_build/default/lib/log_analysis/ebin")  # Update this path
 
 # Define the files to remove
 FILES_TO_REMOVE = ["log_file.txt", "processed_log_file.txt"]
 
 # Function to create the log file
+
+
 def create_log_file(batch_size):
     try:
         print(f"Creating log file with batch size {batch_size}...")
@@ -42,6 +45,8 @@ def create_log_file(batch_size):
         print(f"Error creating log file: {error_message}")
 
 # Function to run a benchmark and capture results
+
+
 def run_benchmark(batch_size, approach, module):
     try:
         print(f"Starting {approach} benchmark with batch size {batch_size}...")
@@ -103,6 +108,7 @@ def create_performance_plot(csv_file: str, output_file: str):
     # Show the plot
     plt.show()
 
+
 def cleanup_files(files):
     for file in files:
         try:
@@ -113,7 +119,8 @@ def cleanup_files(files):
                 print(f"File not found: {file}")
         except Exception as e:
             print(f"Error removing file {file}: {e}")
-            
+
+
 def main():
     # Create or overwrite the CSV file and write headers
     with open(CSV_FILE, 'w', newline='') as csvfile:
@@ -133,6 +140,7 @@ def main():
 
     # Clean up specific files
     cleanup_files(FILES_TO_REMOVE)
+
 
 if __name__ == "__main__":
     main()
