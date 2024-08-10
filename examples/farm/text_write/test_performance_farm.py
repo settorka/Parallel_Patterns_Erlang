@@ -22,8 +22,6 @@ FILES_TO_REMOVE = ["output.txt", "output_parallel.txt", "output_farm.txt"]
 ERLANG_BUILD_PATH = os.path.abspath("_build/default/lib/text_write/ebin")
 
 # Function to run a benchmark and capture results
-
-
 def run_benchmark(batch_size, approach, module):
     try:
         print(f"Starting {approach} benchmark with batch size {batch_size}...")
