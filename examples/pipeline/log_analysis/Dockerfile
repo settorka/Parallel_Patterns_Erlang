@@ -28,4 +28,4 @@ RUN rebar3 compile
 VOLUME ["/results"]
 
 # Command to run the benchmarks and then visualize the results
-CMD ["python3","test_performance_pipeline.py"]
+CMD ["python3","test_performance_pipeline_cloud.py"]
