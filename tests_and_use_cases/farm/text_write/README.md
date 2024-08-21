@@ -30,7 +30,7 @@ This guide will help you set up and use the `text_write` application, which incl
 
     ```sh
     git clone https://github.com/settorka/Parallel_Patterns_Erlang.git
-    cd Parallel_Patterns_Erlang/examples/farm/text_write
+    cd Parallel_Patterns_Erlang/tests_and_use_cases/farm/text_write
     ```
 
 2. **Clean and compile** the application using Rebar3:
