@@ -18,7 +18,7 @@ simple_pipeline_test() ->
         fun subtract_three/1
     ],
 
-    %% Run the pipeline with initial input 10
+    %% Run the pipeline with initial input
     {ok, Result} = pipeline_parallel_pattern:run_pipeline(Stages, 10),
     
     %% The expected result is ((10 + 1) * 2) - 3 = 19
@@ -29,7 +29,7 @@ single_stage_test() ->
     %% Define a single stage
     Stages = [fun add_one/1],
 
-    %% Run the pipeline with initial input 10
+    %% Run the pipeline with initial input
     {ok, Result} = pipeline_parallel_pattern:run_pipeline(Stages, 10),
     
     %% The expected result is 10 + 1 = 11
@@ -40,10 +40,10 @@ empty_pipeline_test() ->
     %% No stages
     Stages = [],
 
-    %% Run the pipeline with initial input 10
+    %% Run the pipeline with initial input
     {ok, Result} = pipeline_parallel_pattern:run_pipeline(Stages, 10),
     
-    %% The expected result is the input itself
+    %% The expected result is the original input
     ?assertEqual(10, Result).
 
 %% Test case: Complex pipeline with larger data and more stages
@@ -57,16 +57,9 @@ complex_pipeline_test() ->
         fun factorial/1
     ],
 
-    %% Run the pipeline with initial input 5
+    %% Run the pipeline with initial input
     {ok, Result} = pipeline_parallel_pattern:run_pipeline(Stages, 5),
     
-    %% Expected calculation: 
-    %% Start with 5
-    %% (5 + 1) = 6
-    %% (6 * 2) = 12
-    %% (12 - 3) = 9
-    %% (9 * 9) = 81
-    %% Factorial of 81 is a very large number, so we'll precompute it
     ExpectedResult = factorial(81),
     ?assertEqual(ExpectedResult, Result).
 
@@ -82,13 +75,12 @@ stress_test_large_input() ->
         fun(L) -> [X - 3 || X <- L] end
     ],
 
-    %% Run the pipeline with the large input list
+    %% Run the pipeline with the input (large list)
     {ok, Result} = pipeline_parallel_pattern:run_pipeline(Stages, LargeInput),
 
-    %% Verify the size of the result is the same as the input list
+    %% size of the result must be the same as the input list
     ?assertEqual(length(LargeInput), length(Result)),
 
-    %% Check a sample value to ensure correctness
     %% The first value should be ((1 + 1) * 2) - 3 = 1
     %% The last value should be ((10000 + 1) * 2) - 3 = 20001
     ?assertEqual(1, hd(Result)),
@@ -99,7 +91,7 @@ extreme_factorial_test() ->
     %% Define a stage that calculates factorial of a large number
     Stages = [fun factorial/1],
 
-    %% Run the pipeline with initial input 20
+    %% Run the pipeline with initial input
     {ok, Result} = pipeline_parallel_pattern:run_pipeline(Stages, 20),
     
     %% The expected result is factorial of 20 = 2,432,902,008,176,640,000
