@@ -8,7 +8,8 @@ import seaborn as sns
 
 # Define the batch sizes
 BATCH_SIZES = [10, 100, 750, 5000, 10000,
-               50000, 100000, 200000, 500000, 1000000, 2000000, 5000000]
+               50000, 100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000, 
+               25000000, 60000000, 100000000, 250000000, 500000000, 1000000000]
 
 # Define the output CSV file
 CSV_FILE = "/results/pipeline_performance_results.csv"
