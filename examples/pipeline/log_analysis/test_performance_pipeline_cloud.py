@@ -8,11 +8,12 @@ import seaborn as sns
 
 # Define the batch sizes
 BATCH_SIZES = [10, 100, 750, 5000, 10000,
-               50000, 100000, 200000, 500000, 1000000, 2000000, 5000000]
+               50000, 100000, 200000, 500000, 1000000, 2000000, 5000000, 10000000,
+               25000000, 60000000, 100000000, 250000000, 500000000, 1000000000]
 
 # Define the output CSV file
-CSV_FILE = "/results/pipeline_performance_results.csv"
-PLOT_FILE = "/results/performance_plot.png"
+CSV_FILE = "/results/pipeline_performance_results_cloud.csv"
+PLOT_FILE = "/results/performance_plot_cloud.png"
 
 # Set the working directory to the location where the Erlang modules are compiled
 ERLANG_BUILD_PATH = os.path.abspath(
@@ -45,8 +46,6 @@ def create_log_file(batch_size):
         print(f"Error creating log file: {error_message}")
 
 # Function to run a benchmark and capture results
-
-
 def run_benchmark(batch_size, approach, module):
     try:
         print(f"Starting {approach} benchmark with batch size {batch_size}...")

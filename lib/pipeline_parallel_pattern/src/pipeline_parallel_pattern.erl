@@ -3,34 +3,33 @@
 
 %% Public API function
 run_pipeline(Stages, InitialInput) ->
-    % Start the pipeline with the initial input
-    run_pipeline_stage(Stages, InitialInput, self(), []).
+    %% Start the pipeline with the initial input
+    run_pipeline_stage(Stages, InitialInput, self()).
 
-%% Unified function to handle both base and recursive cases
-run_pipeline_stage([], Input, ParentPid, _) ->
-    % No more stages, send final result to the parent process
+%% Base case: no more stages
+run_pipeline_stage([], Input, ParentPid) ->
+    %% No more stages, send final result to the parent process
     ParentPid ! {pipeline_done, Input},
     receive
         {pipeline_done, Result} -> {ok, Result}
     end;
 
-run_pipeline_stage([Stage | Rest], Input, ParentPid, Acc) ->
-    % Check if the result for the current stage is already cached
-    case lists:keyfind(Stage, 1, Acc) of
-        false ->
-            % Start the stage process
-            spawn(fun() ->
-                Result = Stage(Input),
-                ParentPid ! {stage_done, Stage, Result}
-            end),
+%% Recursive case: apply the current stage and proceed to the next
+run_pipeline_stage([Stage | Rest], Input, ParentPid) ->
+    %% Start the stage process and monitor it
+    Pid = spawn(fun() ->
+        Result = Stage(Input),
+        ParentPid ! {stage_done, Result}
+    end),
+    Ref = erlang:monitor(process, Pid),
 
-            % Wait for this stage to complete and then process the result
-            receive
-                {stage_done, Stage, Result} ->
-                    % Add result to cache and continue with the next stage
-                    run_pipeline_stage(Rest, Result, ParentPid, [{Stage, Result} | Acc])
-            end;
-        {Stage, CachedResult} ->
-            % Use cached result for the current stage
-            run_pipeline_stage(Rest, CachedResult, ParentPid, Acc)
+    %% Wait for this stage to complete, either normally or with an error
+    receive
+        {'DOWN', Ref, process, _Pid, Reason} ->
+            %% Handle process termination
+            ParentPid ! {stage_failed, Reason};
+        {stage_done, Result} ->
+            %% Recursively process the rest of the stages
+            erlang:demonitor(Ref, [flush]),
+            run_pipeline_stage(Rest, Result, ParentPid)
     end.
