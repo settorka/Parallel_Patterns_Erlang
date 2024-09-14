@@ -82,7 +82,7 @@ Enter either `text_write` or `log_analysis` directory for farm or pipeline tests
 
 Build the Docker image:
 
-```
+```sh
 docker build -t <your_image_name> .
 ```
 
@@ -124,10 +124,10 @@ docker build -t <your_image_name> .
 
    - Push the image to Docker Hub:
 
-     ```
+    ```sh
      docker tag <your_image_name> <your_dockerhub_username>/<your_image_name>:latest
-     docker push <your_dockerhub_username>/<your_image_name>:latest
-     ```
+     docker push <your_dockerhub_username>/<your_image_name>:latest
+    ```
 
 2\. **Google Cloud Setup:**
 
