@@ -92,7 +92,7 @@ docker build -t <your_image_name> .
 
    After building the Docker image, run tests locally using the Docker container:
 
-   ```sh
+   ```
    docker run -d --rm -v $(pwd):/results -w /app <your_image_name>
    ```
 
@@ -110,7 +110,7 @@ docker build -t <your_image_name> .
 
    Alternatively, execute the Python test file directly within your local environment if dependencies are installed:
 
-   ```sh
+   ```
    python3 test_performance_pipeline_local.py
    ```
 
@@ -124,7 +124,7 @@ docker build -t <your_image_name> .
 
    - Push the image to Docker Hub:
 
-     ```sh
+     ```
      docker tag <your_image_name> <your_dockerhub_username>/<your_image_name>:latest
      docker push <your_dockerhub_username>/<your_image_name>:latest
      ```
