@@ -178,4 +178,5 @@ For any questions or issues, please contact:
 
 - **Maintainer:** amedikusettor@gmail.com
 
-- **GitHub Repository:** [settorka/Parallel_Patterns_Erlang](https://github.com/settorka/Parallel_Patterns_Erlang)
+- **GitHub Repository:** [settorka/Parallel_Patterns_Erlang]([https://github.com/settorka/Parallel_Patterns_Erlang](https://github.com/settorka/parallel-processing-patterns-erlang))
+
